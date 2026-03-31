@@ -25,8 +25,8 @@ limit_mm = 1400.0            # total length limit in mm
 # ----------------------------------------------------------------------
 # 2. Masses and Volumes
 # ----------------------------------------------------------------------
-m_total = 320.0
-O_over_F = 1.34
+m_total = 320.0 * 1.03  # kg (320kg propellant + 3% margin)
+O_over_F = 0.8 
 
 m_fuel_liq = m_total / (1.0 + O_over_F)
 m_ox_liq   = m_total - m_fuel_liq
