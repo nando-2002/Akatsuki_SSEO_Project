@@ -48,17 +48,6 @@ def compute_results_objmode(of_range, area_range, results_arr):
 
 compute_results_objmode(of_range, area_range, results_arr)
 
-""" for i in range(len(of_range)): 
-    for j in range(len(area_range)): 
-        curr_problem = RocketProblem(
-            pressure = 6.9, 
-            materials = [hydrazine, nto], 
-            o_f = of_range[i], 
-            sup=area_range[j])
-        exit_isp = curr_problem.run()
-
-        results_arr[i, j] = exit_isp.isp
- """
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -69,15 +58,3 @@ ax.set_xlabel('Supersonic Area Ratio Range')
 ax.set_ylabel('O/F Range')
 ax.set_zlabel('ISP')
 plt.savefig("hello2")
-""" 
-print("Akatsuki Main Thruster")
-exit_pressure    = results.p
-chamber_pressure = results.c_p
-exit_cp          = results.cp
-chamber_cp       = results.c_cp
-exit_isp         = results.isp
-throat_isp       = results.t_isp
-print("Exit Pressure (bar):", exit_pressure," | Chamber Pressure: ", chamber_pressure)
-print("Exit Cp (kJ/(kg*K):", exit_cp," | Chamber Cp: ", chamber_cp)
-print("Exit Isp (s):", exit_isp," | Throat Isp: ", throat_isp)
-"""
