@@ -2,6 +2,16 @@ import math
 import scipy.optimize as opt
 
 # ----------------------------------------------------------------------
+# 0. Margins
+# ----------------------------------------------------------------------
+dry_mass_margin = 0.20  # 20% margin on dry mass
+propellant_margin = 0.02  # 2% margin on propellant mass
+ullage_margin = 0.20  # 20% margin on ullage volume
+fuel_volume_margin = 0.10  # 10% margin on fuel tank volume
+oxidizer_volume_margin = 0.10  # 10% margin on oxidizer tank volume
+pressurant_margin = 0.20  # 20% margin on pressurant mass
+
+# ----------------------------------------------------------------------
 # 1. Constants & Material Properties
 # ----------------------------------------------------------------------
 rho_fuel = 1021.0           # kg/m^3
@@ -32,11 +42,11 @@ g0 = 9.81                      # m/s^2 (standard gravity)
 
 MR_ome = math.exp(delta_v_ome / (I_sp_ome * g0))  # Mass ratio
 MR_rcs = math.exp(delta_v_rcs / (I_sp_rcs * g0))  # Mass ratio for RCS
-m_total_dry = 320.0 * 1.20  # kg (320kg propellant + 20% margin)
+m_total_dry = 320.0 * (1.0 + dry_mass_margin)  # kg (320kg propellant + 20% margin)
 m_rcs = MR_rcs * m_total_dry - m_total_dry
 m_ome = MR_ome * m_total_dry * MR_rcs - m_total_dry*MR_rcs
 
-m_prop = (m_ome + m_rcs)*(1.0 + 0.02 + 0.05)  # kg (propellant mass with 2% margin)
+m_prop = (m_ome + m_rcs)*(1.0 + propellant_margin + ullage_margin)  # kg (propellant mass with 2% margin)
 m_total_wet = m_total_dry + m_prop + m_rcs  # kg (total wet mass including RCS propellant)
 # ----------------------------------------------------------------------
 # 2. Propellant & Pressurant Masses / Volumes
@@ -47,14 +57,14 @@ O_over_F = 0.8
 m_fuel_liq = m_prop / (1.0 + O_over_F)
 m_ox_liq   = m_prop - m_fuel_liq
 
-V_fuel_tank = (m_fuel_liq / rho_fuel) / f_fuel* 1.1  # m^3 (10% margin on fuel tank volume)
-V_ox_tank   = (m_ox_liq   / rho_ox)   / f_ox*    1.1  # m^3 (10% margin on oxidizer tank volume)
+V_fuel_tank = (m_fuel_liq / rho_fuel) / f_fuel* (1.0 + fuel_volume_margin)  # m^3 (10% margin on fuel tank volume)
+V_ox_tank   = (m_ox_liq   / rho_ox)   / f_ox*    (1.0 + oxidizer_volume_margin)  # m^3 (10% margin on oxidizer tank volume)
 
 # Ullage volume (gas needed at operating pressure)
 V_ullage_total = (V_fuel_tank - (m_fuel_liq / rho_fuel)) + \
                  (V_ox_tank   - (m_ox_liq   / rho_ox))
 
-m_He_needed = (P_op * V_ullage_total) / (R_gas_He * T_op)*1.2  # kg (20% margin on pressurant mass)
+m_He_needed = (P_op * V_ullage_total) / (R_gas_He * T_op)*(1.0 + pressurant_margin)  # kg (20% margin on pressurant mass)
 V_He_tank = (m_He_needed * R_gas_He * T_storage) / P_storage
 
 V_comb = V_fuel_tank + V_He_tank          # total volume of combined tank
