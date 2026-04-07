@@ -18,10 +18,16 @@ problem_1 = RocketProblem(pressure = 6.9, materials = [hydrazine, nto], o_f = 0.
 problem_1.set_pressure_units("bar")
 results = problem_1.run()
 
-of_range = np.linspace(0.1, 2, 100)
-area_range = np.linspace(1, 100, 100) 
+of_range = np.linspace(0.1, 2, 20)
+area_range = np.linspace(1, 100, 20) 
 results_arr = np.zeros((len(of_range), len(area_range)))
 
+for i in range(len(of_range)):
+    for j in range(len(area_range)):
+        prob = RocketProblem(pressure=6.9, materials=[hydrazine, nto], o_f=of_range[i], sup=area_range[j])
+        res = prob.run()
+        results_arr[i, j] = res.isp
+'''
 @njit(parallel=True)
 def compute_results_objmode(of_range, area_range, results_arr):
     for i in prange(len(of_range)):
@@ -47,7 +53,7 @@ def compute_results_objmode(of_range, area_range, results_arr):
             results_arr[i, j] = isp_val
 
 compute_results_objmode(of_range, area_range, results_arr)
-
+'''
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -57,4 +63,4 @@ ax.plot_surface(X, Y, results_arr, cmap='viridis')
 ax.set_xlabel('Supersonic Area Ratio Range')
 ax.set_ylabel('O/F Range')
 ax.set_zlabel('ISP')
-plt.savefig("hello2")
+plt.show()
