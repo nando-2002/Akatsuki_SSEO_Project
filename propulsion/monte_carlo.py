@@ -103,14 +103,15 @@ def run_sizing(margins):
         V_comb = V_fuel_tank + V_He_tank
 
         # Geometry sizing
-        R_ox_min_sphere = (3.0 * V_ox_tank / (4.0 * math.pi)) ** (1.0/3.0)
-        L_ox_min = 2.0 * R_ox_min_sphere
-        L_comb_max = limit_mm / 1000.0 - L_ox_min
+        R_ox_min_sphere = (3.0 * V_ox_tank / (4.0 * math.pi)) ** (1.0/3.0) # minimum radius for spherical oxidizer tank
+        R_He_min_sphere = (3.0 * V_He_tank / (4.0 * math.pi)) ** (1.0/3.0) # minimum radius for spherical He tank
+        L_He_min_sphere = 2.0 * R_He_min_sphere # minimum length for spherical He tank
+        L_ox_min = 2.0 * R_ox_min_sphere # minimum length for spherical oxidizer tank
+        L_comb_max = limit_mm / 1000.0 - L_ox_min - L_He_min_sphere # maximum length available for combined fuel/He tank after reserving space for oxidizer tank
         if L_comb_max <= 0:
             return None
 
-        R_com_min = math.sqrt(V_comb / (math.pi * L_comb_max))
-        R_com = R_com_min * 1.10
+        R_com = math.sqrt(V_comb / (math.pi * L_comb_max)) # minimum radius for combined tank to fit within length limit
         L_comb = V_comb / (math.pi * R_com**2)
         L_remain = limit_mm / 1000.0 - L_comb
 
