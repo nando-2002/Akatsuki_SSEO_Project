@@ -41,7 +41,7 @@ T_op      = 273.15 + 59.5   # K
 # Material: Aluminum 6061-T6
 sigma_yield = 240e6          # Pa
 SF          = 2.0
-sigma_allow = sigma_yield / SF
+sigma_allow = sigma_yield * SF
 rho_al = 2700.0              # kg/m^3
 
 f_fuel = 0.95 
