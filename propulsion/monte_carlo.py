@@ -31,6 +31,7 @@ margin_ranges = {
 rho_fuel = 1021.0           # kg/m^3
 rho_ox   = 1440.0           # kg/m^3
 R_gas_He = 2077.0           # J/(kg·K)
+gamma_He = 1.66
 
 P_storage = 22.7e6          # Pa (227 bar)
 P_op      = 1.45e6          # Pa (14.5 bar)
@@ -43,12 +44,12 @@ SF          = 2.0
 sigma_allow = sigma_yield / SF
 rho_al = 2700.0              # kg/m^3
 
-f_fuel = 0.95
+f_fuel = 0.95 
 f_ox   = 0.95
 limit_mm = 1400.0            # total length limit in mm
 
 I_sp_ome = 319.0                 # seconds (assumed specific impulse)
-I_sp_rcs = 302                 # seconds (assumed specific impulse for RCS)
+I_sp_rcs = 222                # seconds (assumed specific impulse for RCS)
 
 delta_v_ome = 1010.0                # m/s (delta-V requirement)
 delta_v_rcs = 200.0                # m/s (delta-V requirement for RCS)
@@ -87,14 +88,16 @@ def run_sizing(margins):
         m_fuel_liq = m_prop / (1.0 + O_over_F)
         m_ox_liq   = m_prop - m_fuel_liq
 
-        V_fuel_tank = (m_fuel_liq / rho_fuel) / f_fuel * (1.0 + fuel_volume_margin)
-        V_ox_tank   = (m_ox_liq   / rho_ox)   / f_ox   * (1.0 + oxidizer_volume_margin)
+        V_fuel_tank = (m_fuel_liq / rho_fuel) * (1.0 + fuel_volume_margin) # add volume margin to fuel
+        V_ox_tank   = (m_ox_liq   / rho_ox) * (1.0 + oxidizer_volume_margin) # add volume margin to oxidizer
 
         # Ullage volume (gas needed at operating pressure)
+        V_prop = V_fuel_tank + V_ox_tank
+
         V_ullage_total = (V_fuel_tank - (m_fuel_liq / rho_fuel)) + \
                          (V_ox_tank   - (m_ox_liq   / rho_ox))
 
-        m_He_needed = (P_op * V_ullage_total) / (R_gas_He * T_op) * (1.0 + pressurant_margin)
+        m_He_needed = (P_op * V_prop) / (R_gas_He * T_op) * (gamma_He/(1-P_op/P_storage))*(1.0 + pressurant_margin)
         V_He_tank = (m_He_needed * R_gas_He * T_storage) / P_storage
 
         V_comb = V_fuel_tank + V_He_tank
