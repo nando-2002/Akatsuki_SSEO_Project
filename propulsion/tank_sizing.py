@@ -43,7 +43,7 @@ I_sp_rcs = 222                # seconds
 
 delta_v_ome = 1010.0                # m/s
 g0 = 9.81                      # m/s^2
-mass_500_thrust = 220                # Kg OME Engine
+mass_500_thrust = 50               # Kg OME Engine
 mass_20N_thrust = 20                 # Kg RCS Thruster
 amount_of_engines = 8                 # Number of RCS thrusters (20N)
 # ----------------------------------------------------------------------
