@@ -11,7 +11,8 @@ nominal_margins = {
     'ullage_margin': 0.10,
     'fuel_volume_margin': 0.05,
     'oxidizer_volume_margin': 0.05,
-    'pressurant_margin': 0.10
+    'pressurant_margin': 0.10,
+    'harness_margin': 0.05
 }
 
 # ----------------------------------------------------------------------
@@ -42,7 +43,9 @@ I_sp_rcs = 222                # seconds
 
 delta_v_ome = 1010.0                # m/s
 g0 = 9.81                      # m/s^2
-
+mass_500_thrust = 220                # Kg OME Engine
+mass_20N_thrust = 20                 # Kg RCS Thruster
+amount_of_engines = 8                 # Number of RCS thrusters (20N)
 # ----------------------------------------------------------------------
 # Function to run sizing for given margins
 # ----------------------------------------------------------------------
@@ -150,8 +153,7 @@ def run_sizing(margins):
         total_propellant = m_fuel_liq + m_ox_liq
         total_pressurant = m_He_needed
         total_tank_structure = mass_com_tank + mass_ox_tank
-        total_propulsion_system = total_propellant + total_pressurant + total_tank_structure
-
+        total_propulsion_system = total_propellant + total_pressurant + total_tank_structure + mass_500_thrust + amount_of_engines * mass_20N_thrust
         target_dry_mass = 320.0 * (1.0 + dry_mass_margin)
         remaining_dry_mass = target_dry_mass - total_propulsion_system
 
