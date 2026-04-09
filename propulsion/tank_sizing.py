@@ -34,7 +34,7 @@ SF          = 2.0
 sigma_allow = sigma_yield * SF
 rho_al = 2700.0              # kg/m^3
 
-mass_wet = 610.0              # kg (total wet mass including propellant, pressurant, and structure)
+mass_wet = 517.6              # kg (total wet mass including propellant, pressurant, and structure)
 
 limit_mm = 1400.0            # total length limit in mm
 
@@ -65,13 +65,13 @@ def run_sizing(margins):
 
         # Mass ratios
         MR_ome = math.exp(delta_v_ome / (I_sp_ome * g0))
-
+        m_dry_initial = 320.0  # kg (initial dry mass estimate without margin)
         m_total_dry = 320.0 * (1.0 + dry_mass_margin)  # kg (dry mass with margin)
         
-        m_post_ome = m_total_dry / MR_ome
+        m_post_ome = mass_wet / MR_ome
         
-        m_rcs = mass_wet - m_post_ome
-        m_ome = mass_wet - m_rcs - m_total_dry
+        m_rcs = m_post_ome - m_dry_initial  # RCS propellant mass (without margins)
+        m_ome = mass_wet - m_rcs - m_dry_initial  # OME propellant mass (without margins)
         
         m_prop = (m_ome + m_rcs) * (1.0 + propellant_margin + ullage_margin)
         # OME + RCS propellant with margins
@@ -153,7 +153,7 @@ def run_sizing(margins):
         total_propellant = m_fuel_liq + m_ox_liq
         total_pressurant = m_He_needed
         total_tank_structure = mass_com_tank + mass_ox_tank
-        total_propulsion_system = total_propellant + total_pressurant + total_tank_structure + mass_500_thrust + amount_of_engines * mass_20N_thrust
+        total_propulsion_system = (total_propellant + total_pressurant + total_tank_structure + mass_500_thrust + amount_of_engines * mass_20N_thrust)* (1.0 + margins['harness_margin'])
         target_dry_mass = 320.0 * (1.0 + dry_mass_margin)
         remaining_dry_mass = target_dry_mass - total_propulsion_system
 
